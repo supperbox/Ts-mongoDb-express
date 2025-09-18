@@ -20,3 +20,13 @@ export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
   skipFormatting,
 )
+
+const path = require('path')
+
+module.exports = {
+  // your existing ESLint config
+  parserOptions: {
+    tsconfigRootDir: path.resolve(__dirname),
+    // other parserOptions if any
+  },
+}

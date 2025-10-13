@@ -7,3 +7,11 @@ export function getUserInfo() {
     method: 'get',
   })
 }
+
+export function createNewUser(data) {
+  return request({
+    url: '/home/userInfo/new',
+    method: 'post',
+    data: data,
+  })
+}

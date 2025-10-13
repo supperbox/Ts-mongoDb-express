@@ -16,6 +16,14 @@ app.get('/home/userInfo', async (req, res) => {
   res.json(data)
 })
 
+app.post('/home/userInfo/new', async (req, res) => {
+  let { name, age, interests } = req.body
+  console.log(req, req.body)
+  let newUser = model.create({ name, age, interests })
+  // newUser.save()
+  res.json({ message: '创建新用户', user: newUser })
+})
+
 app.listen(port, () => {
   console.log('Server running at http://localhost:3001')
 })

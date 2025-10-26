@@ -16,6 +16,13 @@
     "types": ["vite/client"],
     "noImplicitAny": false
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/api/home.js"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/api/home.js",
+    "src/router/router.js"
+  ],
   "exclude": ["node_modules"]
 }

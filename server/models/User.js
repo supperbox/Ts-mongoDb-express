@@ -17,6 +17,6 @@ const userSchema = new mongoose.Schema(
 // 由于自动转换为小写复数形式而去找寻 userinfos 集合，因此需要手动指定集合名称 userInfo
 const userModel = mongoose.model('userInfo', userSchema)
 
-userModel.find().then((res) => console.log(res))
+userModel.find().then((res) => console.log('初始数据集合:', res))
 
 export default userModel

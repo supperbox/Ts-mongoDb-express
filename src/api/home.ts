@@ -3,7 +3,7 @@ import request from '@/api/request'
 
 export function getUserInfo() {
   return request({
-    url: '/home/userInfo',
+    url: '/home/userInfo/getAllUserInfo',
     method: 'get',
   })
 }

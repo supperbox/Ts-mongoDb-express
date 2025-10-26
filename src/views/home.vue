@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { getUserInfo, createNewUser } from '@/api/home.js'
+import { createNewUser } from '@/api/home.js'
+import { useUserInfoStore } from '@/stores/userInfo'
 
 const projectDescription = ref('Practice my TypeScript and Vue3 skills with this project.')
 const features = ref([
@@ -10,10 +11,10 @@ const features = ref([
   'Tailwind CSS for styling',
 ])
 
+// 组件加载时，首先获取所有的用户信息；
 onMounted(() => {
-  getUserInfo().then((data) => {
-    console.log('User Info:', data)
-  })
+  const store = useUserInfoStore()
+  store.getAllUserInfo()
 })
 
 const name = ref('')

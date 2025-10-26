@@ -31,19 +31,16 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     // 对响应数据做点什么
-    const res = response.data
-
+    const res = response
     // 如果自定义code不为0，则判断为错误
-    if (res.code !== 0 && res.code !== 200) {
+    if (res.status !== 0 && res.status !== 200) {
       console.warn('API error:', res.message || 'Error')
-
       // 根据不同错误码处理不同情况
-      if (res.code === 401) {
+      if (res.status === 401) {
         // 未授权，可能需要重新登录
         console.warn('Unauthorized, please login again')
         // 可以在这里添加重定向到登录页的逻辑
       }
-
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import { useUserInfoStore } from '@/stores/userInfo'
 
 const store = useUserInfoStore()
@@ -70,6 +70,100 @@ function formatId(user, maxLen = 12) {
   const tail = s.slice(-4)
   return `${head}...${tail}`
 }
+
+// 新增：编辑弹窗状态与表单
+const editModalVisible = ref(false)
+const editForm = reactive({
+  _id: '',
+  name: '',
+  age: '',
+  interests: '',
+})
+
+// 打开编辑弹窗并填充数据
+function openEdit(user) {
+  editForm._id = user._id ?? user.id ?? ''
+  editForm.name = user.name ?? user.username ?? ''
+  editForm.age = user.age ?? ''
+  editForm.interests = normalizeInterests(user).join(', ')
+  editModalVisible.value = true
+}
+
+function closeEdit() {
+  editModalVisible.value = false
+  // 清空表单（可选）
+  editForm._id = ''
+  editForm.name = ''
+  editForm.age = ''
+  editForm.interests = ''
+}
+
+// 提交编辑：优先调用 store.updateUser，如不存在则打印（方便后续接后端）
+async function submitEdit() {
+  try {
+    loading.value = true
+    const payload = {
+      name: editForm.name,
+      age: editForm.age,
+      interests: editForm.interests
+        ? editForm.interests
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [],
+    }
+
+    if (typeof store.updateUser === 'function') {
+      await store.updateUser(editForm, payload)
+    } else {
+      console.log('[updateUser placeholder]', editForm._id, payload)
+    }
+
+    // 刷新列表 重新获取所有数据
+    await store.getAllUserInfo()
+  } catch (err) {
+    console.error('更新用户失败', err)
+  } finally {
+    loading.value = false
+    closeEdit()
+  }
+}
+
+// 新增：删除弹窗状态与目标
+const deleteModalVisible = ref(false)
+const deleteTarget = reactive({ _id: '', name: '', age: '', interests: '' })
+
+function openDelete(user) {
+  deleteTarget._id = user._id ?? user.id ?? ''
+  deleteTarget.name = user.name ?? user.username ?? deleteTarget._id
+  deleteModalVisible.value = true
+}
+
+function closeDelete() {
+  deleteModalVisible.value = false
+  deleteTarget._id = ''
+  deleteTarget.name = ''
+}
+
+async function confirmDelete() {
+  if (!deleteTarget._id) return closeDelete()
+  try {
+    loading.value = true
+    if (typeof store.deleteUser === 'function') {
+      await store.deleteUser(deleteTarget)
+    } else {
+      // 占位逻辑，替换为实际 API 调用 / store 方法
+      console.log('[deleteUser placeholder]', deleteTarget._id)
+    }
+    // 刷新列表
+    await store.getAllUserInfo()
+  } catch (err) {
+    console.error('删除用户失败', err)
+  } finally {
+    loading.value = false
+    closeDelete()
+  }
+}
 </script>
 
 <template>
@@ -107,7 +201,12 @@ function formatId(user, maxLen = 12) {
               <div class="name">{{ user.name ?? user.username ?? '未命名用户' }}</div>
               <div class="meta">
                 <!-- title 显示完整 id，文本使用 formatId 截断展示 -->
-                <span class="id" :title="user._id ?? user.id ?? '-'">ID: {{ formatId(user) }}</span>
+                <span class="id ml-[10px]" :title="user._id ?? user.id ?? '-'"
+                  >ID: {{ formatId(user) }}</span
+                >
+                <!-- 新增修改按钮 -->
+                <button class="edit-btn" @click="openEdit(user)">修改</button>
+                <button class="delete-btn" @click="openDelete(user)">删除</button>
               </div>
             </div>
 
@@ -143,6 +242,54 @@ function formatId(user, maxLen = 12) {
         </li>
       </ul>
     </main>
+
+    <!-- 编辑弹窗 -->
+    <div v-if="editModalVisible" class="modal-backdrop" @click.self="closeEdit">
+      <div class="modal">
+        <h3 class="modal-title">编辑用户</h3>
+        <form @submit.prevent="submitEdit" class="modal-form">
+          <label class="label"
+            >姓名
+            <input v-model="editForm.name" class="input" required />
+          </label>
+          <label class="label"
+            >年龄
+            <input v-model.number="editForm.age" type="number" class="input" />
+          </label>
+          <label class="label"
+            >爱好（逗号分隔）
+            <input v-model="editForm.interests" class="input" />
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" class="btn cancel" @click="closeEdit">取消</button>
+            <button type="submit" class="btn primary" :disabled="loading">
+              <span v-if="!loading">保存</span>
+              <span v-else class="spinner small" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 新增：删除确认弹窗 -->
+    <div v-if="deleteModalVisible" class="modal-backdrop" @click.self="closeDelete">
+      <div class="modal">
+        <h3 class="modal-title">确认删除</h3>
+        <div class="modal-body" style="margin-top: 8px">
+          确定要删除用户 <strong>{{ deleteTarget.name }}</strong>
+          <span class="muted" style="margin-left: 6px">(ID: {{ deleteTarget._id }})</span>
+          吗？此操作不可恢复。
+        </div>
+        <div class="modal-actions" style="margin-top: 14px">
+          <button type="button" class="btn cancel" @click="closeDelete">取消</button>
+          <button type="button" class="btn danger" @click="confirmDelete" :disabled="loading">
+            <span v-if="!loading">删除</span>
+            <span v-else class="spinner small" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -366,6 +513,133 @@ function formatId(user, maxLen = 12) {
         }
       }
     }
+  }
+
+  /* 新增：编辑按钮样式 */
+  .edit-btn {
+    margin-left: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #f8fafc;
+    border: 1px solid #e6eef6;
+    font-size: 12px;
+    cursor: pointer;
+    color: #0f1724;
+    transition:
+      background 0.15s,
+      transform 0.06s;
+    &:hover {
+      background: #eef2f8;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* 新增删除按钮样式 */
+  .delete-btn {
+    margin-left: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #fff5f5;
+    border: 1px solid #fde2e2;
+    font-size: 12px;
+    cursor: pointer;
+    color: #b91c1c;
+    transition:
+      background 0.15s,
+      transform 0.06s;
+  }
+  .delete-btn:hover {
+    background: #fee2e2;
+    transform: translateY(-1px);
+  }
+
+  /* 危险按钮样式 */
+  .btn.danger {
+    background: linear-gradient(90deg, #ef4444, #b91c1c);
+    color: #fff;
+  }
+
+  /* 弹窗样式 */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    padding: 20px;
+  }
+  .modal {
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 12px 40px rgba(2, 6, 23, 0.3);
+  }
+  .modal-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f1724;
+  }
+  .modal-body {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #111827;
+  }
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .label {
+    font-size: 13px;
+    color: #374151;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #e6eef6;
+    outline: none;
+    font-size: 14px;
+    &:focus {
+      box-shadow: 0 4px 18px rgba(2, 6, 23, 0.06);
+      border-color: #2563eb;
+    }
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    &.cancel {
+      background: #f3f4f6;
+      color: #111827;
+    }
+    &.primary {
+      background: linear-gradient(90deg, #2563eb, #00b894);
+      color: #fff;
+    }
+  }
+  .spinner.small {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: rgba(255, 255, 255, 0.9);
+    animation: spin 0.9s linear infinite;
   }
 }
 

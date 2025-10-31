@@ -15,3 +15,19 @@ export function createNewUser(data) {
     data: data,
   })
 }
+
+export function eidtUser(data) {
+  return request({
+    url: '/home/userInfo/edit',
+    method: 'post',
+    data: data,
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: `/home/userInfo/delete`,
+    method: 'post',
+    data: data,
+  })
+}

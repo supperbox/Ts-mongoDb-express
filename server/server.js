@@ -24,6 +24,26 @@ app.post('/home/userInfo/new', async (req, res) => {
   res.json({ message: '创建新用户', user: newUser })
 })
 
+app.post('/home/userInfo/edit', async (req, res) => {
+  let { id, name, age, interests } = req.body
+  console.log('编辑数据主体:', req.body)
+  let updatedUser = await model.findOneAndUpdate(
+    { id: id },
+    { name, age, interests },
+    { new: true },
+  )
+  res.json({ message: '用户信息已更新', user: updatedUser })
+})
+
+app.post('/home/userInfo/delete', async (req, res) => {
+  console.log('删除数据主体:', req.body)
+  let { id } = req.body
+  let deletedUser = await model.deleteOne({
+    id: id,
+  })
+  res.json({ message: '用户已删除', user: deletedUser })
+})
+
 app.listen(port, () => {
   console.log('Server running at http://localhost:3001')
 })

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { createNewUser } from '@/api/home.js'
 import { useUserInfoStore } from '@/stores/userInfo'
 
 const projectDescription = ref('Practice my TypeScript and Vue3 skills with this project.')
@@ -23,6 +22,17 @@ const interests = ref('')
 </script>
 
 <template>
+  <!-- 新增：顶部导航 -->
+  <header class="home-topnav">
+    <div class="topnav-inner">
+      <div class="brand">TSLearn</div>
+      <nav class="links">
+        <router-link to="/userOverView" class="link">用户概览</router-link>
+        <!-- 未来可放其它入口 -->
+      </nav>
+    </div>
+  </header>
+
   <div class="home">
     <h1 class="title">首页</h1>
     <div class="description">
@@ -37,7 +47,7 @@ const interests = ref('')
 
   <div class="user-form-card">
     <div class="form-title">创建新用户</div>
-    <form @submit.prevent="createNewUser({ name, age, interests })" class="user-form">
+    <form @submit.prevent="store.createNewUser({ name, age, interests })" class="user-form">
       <input v-model="name" class="form-input" placeholder="姓名" required />
       <input v-model.number="age" type="number" class="form-input" placeholder="年龄" required />
       <input v-model="interests" class="form-input" placeholder="兴趣（逗号分隔）" />
@@ -47,6 +57,41 @@ const interests = ref('')
 </template>
 
 <style scoped>
+/* 新增顶部导航样式 */
+.home-topnav {
+  width: 100%;
+  background: linear-gradient(90deg, #ffffff, #f8fafc);
+  border-bottom: 1px solid #eceff3;
+}
+.topnav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-weight: 700;
+  color: #1f2937;
+}
+.links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.link {
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+}
+.link:hover {
+  background: #eef2f7;
+  color: #0f1724;
+}
+
 .home {
   max-width: 800px;
   margin: 0 auto;

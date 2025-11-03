@@ -44,7 +44,7 @@ const interests = ref('')
       </ul>
     </div>
   </div>
-
+  ·
   <div class="user-form-card">
     <div class="form-title">创建新用户</div>
     <form @submit.prevent="store.createNewUser({ name, age, interests })" class="user-form">

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/home.vue'
 import userOverView from '@/views/userOverView.vue'
 import NavBar from '../views/navbar.vue'
+import Login from '../views/login.vue' // 新增
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,6 +11,11 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
     },
     {
       path: '/userOverView',

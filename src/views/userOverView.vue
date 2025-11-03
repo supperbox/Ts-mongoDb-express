@@ -394,7 +394,7 @@ async function confirmDelete() {
         transform 0.12s ease,
         box-shadow 0.12s ease;
       &:hover {
-        transform: translateY(-6px);
+        transform: translateY(-1px);
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       }
 

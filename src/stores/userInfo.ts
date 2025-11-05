@@ -12,8 +12,8 @@ export const useUserInfoStore = defineStore('userInfo', {
     // 获取所有的用户信息
     async getAllUserInfo() {
       const res = await getUserInfo()
-      this.allUserInfo = res.data || []
-      console.log('Fetched all user info:', this.allUserInfo)
+      this.allUserInfo = res || []
+      console.log('Fetched all user info:', res)
     },
 
     async createNewUser(data) {

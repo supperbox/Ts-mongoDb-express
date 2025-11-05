@@ -46,7 +46,7 @@
             <span class="ml-2">记住我</span>
           </label>
           <div class="text-sm">
-            <button @click.prevent="toggleMode" class="text-blue-600 hover:underline">
+            <button type="button" @click.prevent="toggleMode" class="text-blue-600 hover:underline">
               {{ mode === 'login' ? '去注册' : '去登录' }}
             </button>
           </div>
@@ -92,8 +92,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLoginStore } from '../stores/loginStore'
 
 const router = useRouter()
+const loginStore = useLoginStore()
+
 const mode = ref<'login' | 'register'>('login')
 const username = ref('')
 const password = ref('')
@@ -113,14 +116,6 @@ function loadUsers(): Record<string, { password: string; createdAt: string }> {
   }
 }
 
-function saveUsers(map: Record<string, { password: string; createdAt: string }>) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
-  } catch (e) {
-    console.error('保存用户失败', e)
-  }
-}
-
 function toggleMode() {
   error.value = ''
   mode.value = mode.value === 'login' ? 'register' : 'login'
@@ -130,30 +125,9 @@ function toggleMode() {
   confirmPassword.value = ''
 }
 
-// 登录流程（根据本地存储校验）
-async function doLogin(name: string, pass: string) {
-  const users = loadUsers()
-  const record = users[name]
-  if (!record) {
-    throw new Error('用户未注册')
-  }
-  if (record.password !== pass) {
-    throw new Error('密码错误')
-  }
-  // 登录成功：可在此保存登录状态（localStorage/session）或 token
-  localStorage.setItem('tslearn_current_user', name)
-  return true
-}
-
-// 注册流程（存入 localStorage）
-async function doRegister(name: string, pass: string) {
-  const users = loadUsers()
-  if (users[name]) {
-    throw new Error('该账号已被注册')
-  }
-  users[name] = { password: pass, createdAt: new Date().toISOString() }
-  saveUsers(users)
-  return true
+function isStrongPassword(pwd: string) {
+  // 至少8位，包含字母和数字
+  return pwd.length > 6 && /[A-Za-z]/.test(pwd) && /\d/.test(pwd)
 }
 
 async function onSubmit() {
@@ -167,6 +141,10 @@ async function onSubmit() {
       error.value = '两次输入的密码不一致'
       return
     }
+    if (!isStrongPassword(password.value)) {
+      error.value = '密码需大于6位且包含数字和字母'
+      return
+    }
   }
 
   loading.value = true
@@ -175,14 +153,15 @@ async function onSubmit() {
     await new Promise((resolve) => setTimeout(resolve, 600))
 
     if (mode.value === 'login') {
-      await doLogin(username.value.trim(), password.value)
+      await loginStore.login({ account: username.value.trim(), password: password.value })
+
       // 登录成功
-      router.push({ path: '/' })
+      router.push({ path: '/home' })
     } else {
       // 注册后自动登录
-      await doRegister(username.value.trim(), password.value)
-      await doLogin(username.value.trim(), password.value)
-      router.push({ path: '/' })
+      await loginStore.register({ account: username.value.trim(), password: password.value })
+      await loginStore.login({ account: username.value.trim(), password: password.value })
+      router.push({ path: '/home' })
     }
   } catch (e: any) {
     error.value = e?.message || '操作失败'

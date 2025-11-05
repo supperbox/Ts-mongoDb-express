@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { showError } from '@/utils/errorHandler'
 
 // 创建axios实例
 const service = axios.create({
@@ -30,25 +31,29 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    // 对响应数据做点什么
-    const res = response
-    // 如果自定义code不为0，则判断为错误
-    if (res.status !== 0 && res.status !== 200) {
-      console.warn('API error:', res.message || 'Error')
-      // 根据不同错误码处理不同情况
-      if (res.status === 401) {
-        // 未授权，可能需要重新登录
-        console.warn('Unauthorized, please login again')
-        // 可以在这里添加重定向到登录页的逻辑
+    // HTTP 状态判断：非 200 视为错误，显示错误弹窗
+    const status = response?.status
+    const message = response?.data?.message ?? response?.statusText ?? '未知错误'
+    if (status !== 200) {
+      try {
+        showError(status, message)
+      } catch (e) {
+        console.error('showError 调用失败', e)
       }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
+      return Promise.reject(new Error(message))
     }
+    // 返回实际 data，方便调用端使用
+    return response.data ?? response
   },
   (error) => {
-    // 对响应错误做点什么
-    console.error('Response error:', error)
+    // 网络或其他错误
+    const code = error?.response?.status ?? 'NETWORK_ERROR'
+    const msg = error?.response?.data?.message ?? error.message ?? '网络或服务器错误'
+    try {
+      showError(code, msg)
+    } catch (e) {
+      console.error('showError 调用失败', e)
+    }
     return Promise.reject(error)
   },
 )

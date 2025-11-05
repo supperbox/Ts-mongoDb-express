@@ -177,8 +177,10 @@ function closeModal() {
   interests.value = ''
 }
 
-function handleCreateUser() {
-  store.createNewUser({ name: name.value, age: age.value, interests: interests.value })
+// 新建用户
+async function handleCreateUser() {
+  await store.createNewUser({ name: name.value, age: age.value, interests: interests.value })
+  await store.getAllUserInfo()
   closeModal()
 }
 </script>
@@ -198,6 +200,12 @@ function handleCreateUser() {
             v-else
             class="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full inline-block"
           ></span>
+        </button>
+        <button
+          @click="showModal = true"
+          class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          新增用户
         </button>
       </div>
     </header>
@@ -289,16 +297,6 @@ function handleCreateUser() {
         </li>
       </ul>
 
-      <!-- 新增用户按钮 -->
-      <div class="flex justify-end mt-8">
-        <button
-          @click="showModal = true"
-          class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          新增用户
-        </button>
-      </div>
-
       <!-- 新建用户弹窗 -->
       <Transition name="modal-fade">
         <div
@@ -313,24 +311,33 @@ function handleCreateUser() {
               </button>
             </div>
             <form @submit.prevent="handleCreateUser" class="flex flex-col gap-4">
-              <input
-                v-model="name"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="姓名"
-                required
-              />
-              <input
-                v-model.number="age"
-                type="number"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="年龄"
-                required
-              />
-              <input
-                v-model="interests"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="兴趣（逗号分隔）"
-              />
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                姓名
+                <input
+                  v-model="name"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="姓名"
+                  required
+                />
+              </label>
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                年龄
+                <input
+                  v-model.number="age"
+                  type="number"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="年龄"
+                  required
+                />
+              </label>
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                兴趣（逗号分隔）
+                <input
+                  v-model="interests"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="兴趣（逗号分隔）"
+                />
+              </label>
               <button
                 type="submit"
                 class="py-2 rounded bg-gradient-to-r from-blue-600 to-green-500 text-white hover:opacity-95"
@@ -343,59 +350,69 @@ function handleCreateUser() {
       </Transition>
 
       <!-- 编辑弹窗 -->
-      <div
-        v-if="editModalVisible"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      >
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-          <h3 class="text-lg font-semibold mb-4">编辑用户</h3>
-          <form @submit.prevent="submitEdit" class="flex flex-col gap-4">
-            <label class="flex flex-col gap-2 text-sm text-gray-700">
-              姓名
-              <input
-                v-model="editForm.name"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-            </label>
-            <label class="flex flex-col gap-2 text-sm text-gray-700">
-              年龄
-              <input
-                v-model.number="editForm.age"
-                type="number"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </label>
-            <label class="flex flex-col gap-2 text-sm text-gray-700">
-              爱好（逗号分隔）
-              <input
-                v-model="editForm.interests"
-                class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </label>
-            <div class="flex justify-end gap-3 mt-2">
-              <button
-                type="button"
-                class="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
-                @click="closeEdit"
-              >
-                取消
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                :disabled="loading"
-              >
-                <span v-if="!loading">保存</span>
-                <span
-                  v-else
-                  class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full inline-block"
-                ></span>
+      <Transition name="modal-fade">
+        <div
+          v-if="editModalVisible"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+        >
+          <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-lg font-semibold text-gray-800">编辑用户</span>
+              <button @click="closeEdit" class="text-gray-400 hover:text-gray-600 text-xl">
+                &times;
               </button>
             </div>
-          </form>
+            <form @submit.prevent="submitEdit" class="flex flex-col gap-4">
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                姓名
+                <input
+                  v-model="editForm.name"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="姓名"
+                  required
+                />
+              </label>
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                年龄
+                <input
+                  v-model.number="editForm.age"
+                  type="number"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="年龄"
+                />
+              </label>
+              <label class="flex flex-col gap-1 text-sm text-gray-700">
+                兴趣（逗号分隔）
+                <input
+                  v-model="editForm.interests"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="兴趣（逗号分隔）"
+                />
+              </label>
+              <div class="flex justify-end gap-3 mt-2">
+                <button
+                  type="button"
+                  class="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  @click="closeEdit"
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 rounded bg-gradient-to-r from-blue-600 to-green-500 text-white hover:opacity-95"
+                  :disabled="loading"
+                >
+                  <span v-if="!loading">保存</span>
+                  <span
+                    v-else
+                    class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full inline-block"
+                  ></span>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </Transition>
 
       <!-- 删除确认弹窗 -->
       <div

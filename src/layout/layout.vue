@@ -35,7 +35,7 @@
 
     <!-- 底部栏 -->
     <footer class="w-full bg-white border-t py-4 text-center text-xs text-gray-400">
-      © 2024 TsLearn Demo. A fantastic project.
+      © 2025 TsLearn Demo. A fantastic project.
     </footer>
   </div>
 </template>

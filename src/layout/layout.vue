@@ -46,11 +46,10 @@ import { useRouter } from 'vue-router'
 // 可根据需要添加全局逻辑
 const loginStore = useLoginStore()
 const router = useRouter()
-const account = loginStore.account
 
 function logout() {
-  loginStore.logout()
-  router.push('/login')
+  loginStore.logout() // 调用登出方法
+  router.push('/login') // 在这里重定向到登录页
 }
 </script>
 

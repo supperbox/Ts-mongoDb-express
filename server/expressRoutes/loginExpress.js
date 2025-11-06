@@ -45,12 +45,12 @@ router.post('/login', async (req, res) => {
 // JWT鉴权中间件示例
 export function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1]
-  if (!token) return res.status(401).json({ message: '未登录或token缺失' })
+  if (!token) return res.status(401).json({ message: '未登录请先登录', code: 'reload' })
   try {
     req.user = jwt.verify(token, JWT_SECRET)
     next()
   } catch {
-    res.status(401).json({ message: 'token无效或已过期' })
+    res.status(401).json({ code: 'reload', message: 'token无效或已过期' })
   }
 }
 

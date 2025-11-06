@@ -1,15 +1,16 @@
 import express from 'express'
 import model from '../../db/User.js'
+import { authMiddleware } from './loginExpress.js'
 
 const router = express.Router()
 
-router.get('/userInfo/getAllUserInfo', async (req, res) => {
+router.get('/userInfo/getAllUserInfo', authMiddleware, async (req, res) => {
   let data = await model.find()
   console.log('查询所有数据:', data)
   res.send(data)
 })
 
-router.post('/userInfo/new', async (req, res) => {
+router.post('/userInfo/new', authMiddleware, async (req, res) => {
   let { name, age, interests } = req.body
   console.log('数据主体:', req.body)
   let newUser = model.create({ name, age, interests })

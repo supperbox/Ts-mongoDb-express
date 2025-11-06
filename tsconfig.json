@@ -22,7 +22,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/api/home.js",
-    "src/router/router.js"
+    "src/router/router.js",
+    "types/auto-imports.d.ts",
+    "types/components.d.ts"
   ],
   "exclude": ["node_modules"]
 }

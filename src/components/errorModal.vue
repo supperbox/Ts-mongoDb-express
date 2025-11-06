@@ -40,9 +40,22 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  errorCode: {
+    type: String,
+    default: null,
+  },
 })
 
+const loginStore = useLoginStore()
+const router = useRouter()
+
 function handleClose() {
+  console.log('ErrorModal handleClose called with errorCode:', props.errorCode)
+  if (props.errorCode === 'reload') {
+    loginStore.logout()
+    router.push('/login')
+    return
+  }
   if (props.onClose && typeof props.onClose === 'function') {
     try {
       props.onClose()

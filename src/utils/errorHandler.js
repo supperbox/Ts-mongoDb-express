@@ -3,7 +3,7 @@ import ErrorModal from '@/components/errorModal.vue'
 
 // 包裹组件，控制显示和卸载
 const ErrorModalWrapper = {
-  props: ['code', 'message', 'onClose'],
+  props: ['code', 'message', 'onClose', 'errCode'],
   setup(props) {
     const visible = ref(true)
     function handleClose() {
@@ -20,11 +20,12 @@ const ErrorModalWrapper = {
         visible: visible.value,
         // 监听过渡结束
         onVnodeUnmounted: afterLeave,
+        errCode: props.errCode,
       })
   },
 }
 
-export function showError(code, message) {
+export function showError(code, message, errCode) {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
@@ -41,6 +42,7 @@ export function showError(code, message) {
     code,
     message,
     onClose: cleanup,
+    errCode,
   })
   app.mount(container)
 }

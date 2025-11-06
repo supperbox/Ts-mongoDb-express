@@ -15,7 +15,8 @@ service.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     // 例如：获取并设置token
-    const token = localStorage.getItem('token')
+    const store = useLoginStore()
+    const token = store.token
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
@@ -49,8 +50,9 @@ service.interceptors.response.use(
     // 网络或其他错误
     const code = error?.response?.status ?? 'NETWORK_ERROR'
     const msg = error?.response?.data?.message ?? error.message ?? '网络或服务器错误'
+    const errCode = error?.response?.data?.code
     try {
-      showError(code, msg)
+      showError(code, msg, errCode)
     } catch (e) {
       console.error('showError 调用失败', e)
     }

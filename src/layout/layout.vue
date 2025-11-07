@@ -43,9 +43,11 @@
 <script setup lang="ts">
 import { useLoginStore } from '../stores/loginStore'
 import { useRouter } from 'vue-router'
-// 可根据需要添加全局逻辑
+import { useCommonStore } from '@/stores/common'
+
 const loginStore = useLoginStore()
 const router = useRouter()
+const commonStore = useCommonStore()
 
 function logout() {
   loginStore.logout() // 调用登出方法

@@ -6,6 +6,8 @@ export const useLoginStore = defineStore('login', {
   state: () => {
     return {
       token: null,
+      username: '',
+      password: '',
     }
   },
   actions: {

@@ -24,7 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
+import { useRouter } from 'vue-router'
+import { useLoginStore } from '@/stores/loginStore'
 
 const props = defineProps({
   code: [String, Number],
@@ -32,36 +34,22 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  onClose: {
-    type: Function,
-    default: null,
-  },
   visible: {
     type: Boolean,
     default: true,
   },
-  errorCode: {
-    type: String,
-    default: null,
-  },
 })
+
+const emit = defineEmits(['close'])
 
 const loginStore = useLoginStore()
 const router = useRouter()
 
 function handleClose() {
-  console.log('ErrorModal handleClose called with errorCode:', props.errorCode)
-  if (props.errorCode === 'reload') {
+  emit('close')
+  if (props.code === 'reload') {
     loginStore.logout()
     router.push('/login')
-    return
-  }
-  if (props.onClose && typeof props.onClose === 'function') {
-    try {
-      props.onClose()
-    } catch (e) {
-      // ignore
-    }
   }
 }
 </script>

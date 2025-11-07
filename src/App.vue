@@ -1,7 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const commonStore = useCommonStore()
+</script>
 
 <template>
   <div class="app">
+    <error-modal
+      v-if="commonStore.showErr"
+      :code="commonStore.errCode"
+      :message="commonStore.errMsg"
+      @close="commonStore.showErr = false"
+    ></error-modal>
     <router-view></router-view>
   </div>
 </template>

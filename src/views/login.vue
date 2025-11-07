@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-white">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+    <div class="w-full min-w-[350px] max-w-md bg-white rounded-lg shadow-md p-8">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
         {{ mode === 'login' ? '用户登录' : '用户注册' }}
       </h2>
@@ -81,10 +81,6 @@
           </button>
         </div>
       </form>
-
-      <p class="text-xs text-gray-400 mt-4 text-center">
-        演示项目：注册信息保存在本地（localStorage），仅用于本地开发演示。
-      </p>
     </div>
   </div>
 </template>
@@ -105,16 +101,24 @@ const remember = ref(false)
 const loading = ref(false)
 const error = ref('')
 
-const STORAGE_KEY = 'tslearn_users' // localStorage key
-
-function loadUsers(): Record<string, { password: string; createdAt: string }> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
+function rememberCredentials() {
+  if (remember.value) {
+    loginStore.username = username.value
+    loginStore.password = password.value
+  } else {
+    loginStore.username = ''
+    loginStore.password = ''
   }
 }
+
+// 记住我 功能实现
+onMounted(() => {
+  if (loginStore.username && loginStore.password) {
+    username.value = loginStore.username
+    password.value = loginStore.password
+    remember.value = true
+  }
+})
 
 function toggleMode() {
   error.value = ''
@@ -157,14 +161,16 @@ async function onSubmit() {
 
       // 登录成功
       router.push({ path: '/home' })
+      rememberCredentials()
     } else {
       // 注册后自动登录
       await loginStore.register({ account: username.value.trim(), password: password.value })
       await loginStore.login({ account: username.value.trim(), password: password.value })
       router.push({ path: '/home' })
+      rememberCredentials()
     }
   } catch (e: any) {
-    error.value = e?.message || '操作失败'
+    error.value = e?.response?.data?.message || '操作失败'
   } finally {
     loading.value = false
   }

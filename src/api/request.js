@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { showError } from '@/utils/errorHandler'
+import { useLoginStore } from '@/stores/loginStore'
+import { useCommonStore } from '@/stores/common'
 
 // 创建axios实例
 const service = axios.create({
@@ -50,11 +51,12 @@ service.interceptors.response.use(
     // 网络或其他错误
     const code = error?.response?.status ?? 'NETWORK_ERROR'
     const msg = error?.response?.data?.message ?? error.message ?? '网络或服务器错误'
-    const errCode = error?.response?.data?.code
+    const errCode = error?.response?.data?.code ?? ''
     try {
-      showError(code, msg, errCode)
+      const commonStore = useCommonStore()
+      commonStore.setError(true, msg, errCode || code)
     } catch (e) {
-      console.error('showError 调用失败', e)
+      console.error('commonStore.setError 调用失败', e)
     }
     return Promise.reject(error)
   },

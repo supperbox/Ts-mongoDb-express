@@ -5,7 +5,7 @@ import { authMiddleware } from './loginExpress.js'
 const router = express.Router()
 
 // 统一添加鉴权中间件
-router.use(authMiddleware)
+// router.use(authMiddleware)
 
 router.get('/userInfo/getAllUserInfo', async (req, res) => {
   let data = await model.find()

@@ -17,6 +17,7 @@ declare module 'vue' {
     Layout: typeof import('./../src/layout/layout.vue')['default']
     Login: typeof import('./../src/views/login.vue')['default']
     Navbar: typeof import('./../src/views/navbar.vue')['default']
+    RotatingText: typeof import('./../src/components/fantasticCss/rotatingText.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UserOverView: typeof import('./../src/views/userOverView.vue')['default']

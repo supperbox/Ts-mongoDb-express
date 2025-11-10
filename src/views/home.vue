@@ -46,15 +46,16 @@ const interests = ref('')
     </div>
   </div>
 
-  <div class="flex gap-[20px]">
+  <div class="flex gap-[20px] justify-center mt-[30px]">
     <div
-      class="px-2 sm:px-2 md:px-3 overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+      class="px-2 sm:px-2 md:px-3 overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg h-[100px] flex items-center text-2xl font-bold"
+      style="min-width: 120px"
     >
-      Fantastic
+      Always
     </div>
     <RotatingText
-      :texts="['webSite', 'Man!']"
-      mainClassName="px-2 sm:px-2 md:px-3 bg-green-300 text-black overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+      :texts="['Creative', 'Fantastic', 'Passionate']"
+      mainClassName="flex items-center justify-center h-[100px] w-[180px] bg-green-300 text-black overflow-hidden rounded-lg text-3xl font-extrabold"
       staggerFrom="last"
       :initial="{ y: '100%' }"
       :animate="{ y: 0 }"
@@ -62,7 +63,7 @@ const interests = ref('')
       :staggerDuration="0.025"
       splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
       :transition="{ type: 'spring', damping: 30, stiffness: 400 }"
-      :rotationInterval="2000"
+      :rotationInterval="1500"
     />
   </div>
 </template>

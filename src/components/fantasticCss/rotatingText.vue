@@ -73,6 +73,7 @@ const splitIntoCharacters = (text: string): string[] => {
 
   return [...text]
 }
+
 const elements = computed((): WordElement[] => {
   const currentText = props.texts[currentTextIndex.value]
 
@@ -135,6 +136,7 @@ const handleIndexChange = (newIndex: number): void => {
 }
 
 const next = (): void => {
+  console.log(currentTextIndex.value, props.texts.length)
   const isAtEnd = currentTextIndex.value === props.texts.length - 1
   const nextIndex = isAtEnd ? (props.loop ? 0 : currentTextIndex.value) : currentTextIndex.value + 1
 
@@ -189,14 +191,14 @@ defineExpose({
   reset,
 })
 
-watch(
-  () => [props.auto, props.rotationInterval] as const,
-  () => {
-    cleanupInterval()
-    startInterval()
-  },
-  { immediate: true },
-)
+// watch(
+//   () => [props.auto, props.rotationInterval] as const,
+//   () => {
+//     cleanupInterval()
+//     startInterval()
+//   },
+//   { immediate: true },
+// )
 
 onMounted(() => {
   startInterval()

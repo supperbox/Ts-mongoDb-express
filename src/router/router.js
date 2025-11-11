@@ -4,6 +4,7 @@ import Home from '../views/home.vue'
 import userOverView from '@/views/userOverView.vue'
 import NavBar from '../views/navbar.vue'
 import Login from '../views/login.vue'
+import Shudu from '../views/shudu.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,11 @@ const router = createRouter({
           path: 'nav',
           name: 'NavBar',
           component: NavBar,
+        },
+        {
+          path: 'shudu',
+          name: 'Shudu',
+          component: Shudu,
         },
       ],
     },

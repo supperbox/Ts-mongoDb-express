@@ -48,7 +48,7 @@ const interests = ref('')
 
   <div class="flex gap-[20px] justify-center mt-[30px]">
     <div
-      class="px-2 sm:px-2 md:px-3 overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg h-[100px] flex items-center text-2xl font-bold"
+      class="px-2 sm:px-2 md:px-3 overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg h-[100px] flex items-center text-3xl font-extrabold text-fuchsia-600 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
       style="min-width: 120px"
     >
       Always

@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col min-h-screen bg-gray-50 w-full">
     <!-- 顶部导航栏 -->
-    <nav class="w-full bg-white shadow flex items-center justify-between px-6 py-3">
+    <nav
+      class="w-full bg-white shadow flex items-center justify-between px-6 py-3 sticky top-0 z-20"
+    >
       <div class="flex items-center gap-6">
         <span class="text-xl font-bold text-blue-600">TsLearn Demo</span>
         <router-link
@@ -17,6 +19,13 @@
           active-class="text-blue-600 font-bold"
         >
           账户概览
+        </router-link>
+        <router-link
+          to="/shudu"
+          class="text-gray-700 hover:text-blue-600 px-2 py-1 rounded transition font-medium"
+          active-class="text-blue-600 font-bold"
+        >
+          智力提升
         </router-link>
         <!-- 可继续添加其他导航项 -->
       </div>

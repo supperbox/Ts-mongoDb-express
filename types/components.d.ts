@@ -20,6 +20,7 @@ declare module 'vue' {
     RotatingText: typeof import('./../src/components/fantasticCss/rotatingText.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Shudu: typeof import('./../src/views/shudu.vue')['default']
     UserOverView: typeof import('./../src/views/userOverView.vue')['default']
   }
 }

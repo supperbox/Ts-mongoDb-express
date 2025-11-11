@@ -38,9 +38,10 @@ service.interceptors.response.use(
     const message = response?.data?.message ?? response?.statusText ?? '未知错误'
     if (status !== 200) {
       try {
-        showError(status, message)
+        const commonStore = useCommonStore()
+        commonStore.setError(true, message, status)
       } catch (e) {
-        console.error('showError 调用失败', e)
+        console.error('commonStore.setError 调用失败', e)
       }
       return Promise.reject(new Error(message))
     }
@@ -49,6 +50,7 @@ service.interceptors.response.use(
   },
   (error) => {
     // 网络或其他错误
+    console.log('Response error:', error)
     const code = error?.response?.status ?? 'NETWORK_ERROR'
     const msg = error?.response?.data?.message ?? error.message ?? '网络或服务器错误'
     const errCode = error?.response?.data?.code ?? ''

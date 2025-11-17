@@ -28,6 +28,7 @@ declare global {
   const getIntoHouse: typeof import('../src/utils/tool').getIntoHouse
   const getUserInfo: typeof import('../src/api/userApi').getUserInfo
   const h: typeof import('vue').h
+  const imagesApi: typeof import('../src/api/imagesApi.js').default
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive

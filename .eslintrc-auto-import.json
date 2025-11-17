@@ -38,6 +38,7 @@
     "getIntoHouse": true,
     "getUserInfo": true,
     "h": true,
+    "imagesApi": true,
     "inject": true,
     "isProxy": true,
     "isReactive": true,

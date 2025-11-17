@@ -1,9 +1,7 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-50 w-full">
+  <div class="flex flex-col h-full bg-gray-50 w-full">
     <!-- 顶部导航栏 -->
-    <nav
-      class="w-full bg-white shadow flex items-center justify-between px-6 py-3 sticky top-0 z-20"
-    >
+    <nav class="w-full bg-white shadow flex items-center justify-between px-6 py-3 flex-shrink-0">
       <div class="flex items-center gap-6">
         <span class="text-xl font-bold text-blue-600">TsLearn Demo</span>
         <router-link
@@ -21,13 +19,12 @@
           账户概览
         </router-link>
         <router-link
-          to="/shudu"
+          to="/fileUpload"
           class="text-gray-700 hover:text-blue-600 px-2 py-1 rounded transition font-medium"
           active-class="text-blue-600 font-bold"
         >
-          智力提升
+          文件上传
         </router-link>
-        <!-- 可继续添加其他导航项 -->
       </div>
       <button
         @click="logout"
@@ -38,12 +35,12 @@
     </nav>
 
     <!-- 主内容区域 -->
-    <main class="flex-1 w-full max-w-5xl mx-auto py-8 px-4">
+    <main class="flex-1 w-full max-w-5xl mx-auto py-8 px-4 overflow-y-auto">
       <router-view />
     </main>
 
     <!-- 底部栏 -->
-    <footer class="w-full bg-white border-t py-4 text-center text-xs text-gray-400">
+    <footer class="w-full bg-white border-t py-4 text-center text-xs text-gray-400 flex-shrink-0">
       © 2025 TsLearn Demo. A fantastic project.
     </footer>
   </div>

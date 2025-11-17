@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '@/layout/layout.vue'
-import Home from '../views/home.vue'
+import Home from '@/views/home.vue'
 import userOverView from '@/views/userOverView.vue'
-import NavBar from '../views/navbar.vue'
-import Login from '../views/login.vue'
-import Shudu from '../views/shudu.vue'
+import Login from '@/views/login.vue'
+import Shudu from '@/views/shudu.vue'
+import FileUpload from '@/views/fileUpload.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,14 +29,9 @@ const router = createRouter({
           component: userOverView,
         },
         {
-          path: 'nav',
-          name: 'NavBar',
-          component: NavBar,
-        },
-        {
-          path: 'shudu',
-          name: 'Shudu',
-          component: Shudu,
+          path: 'fileUpload', // 确保路径与导航栏一致
+          name: 'FileUpload',
+          component: FileUpload,
         },
       ],
     },

@@ -35,6 +35,7 @@
     "getCurrentInstance": true,
     "getCurrentScope": true,
     "getCurrentWatcher": true,
+    "getFileList": true,
     "getIntoHouse": true,
     "getUserInfo": true,
     "h": true,

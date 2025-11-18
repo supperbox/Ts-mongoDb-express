@@ -25,6 +25,13 @@
         >
           文件上传
         </router-link>
+        <router-link
+          to="/imagesShow"
+          class="text-gray-700 hover:text-blue-600 px-2 py-1 rounded transition font-medium"
+          active-class="text-blue-600 font-bold"
+        >
+          图片展示
+        </router-link>
       </div>
       <button
         @click="logout"

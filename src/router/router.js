@@ -5,6 +5,7 @@ import userOverView from '@/views/userOverView.vue'
 import Login from '@/views/login.vue'
 import Shudu from '@/views/shudu.vue'
 import FileUpload from '@/views/fileUpload.vue'
+import ImagesShow from '@/views/imagesShow.vue' // 新增
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
           path: 'fileUpload', // 确保路径与导航栏一致
           name: 'FileUpload',
           component: FileUpload,
+        },
+        {
+          path: 'imagesShow',
+          name: 'ImagesShow',
+          component: ImagesShow,
         },
       ],
     },

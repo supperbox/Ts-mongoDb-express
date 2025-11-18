@@ -15,6 +15,7 @@ declare module 'vue' {
     ErrorModal: typeof import('./../src/components/errorModal.vue')['default']
     FileUpload: typeof import('./../src/views/fileUpload.vue')['default']
     Home: typeof import('./../src/views/home.vue')['default']
+    ImagesShow: typeof import('./../src/views/imagesShow.vue')['default']
     Layout: typeof import('./../src/layout/layout.vue')['default']
     Login: typeof import('./../src/views/login.vue')['default']
     Navbar: typeof import('./../src/views/navbar.vue')['default']

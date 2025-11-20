@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     App: typeof import('./../src/App.vue')['default']
+    copy: typeof import('./../src/views/imagesShow copy.vue')['default']
     ErrorModal: typeof import('./../src/components/errorModal.vue')['default']
     FileUpload: typeof import('./../src/views/fileUpload.vue')['default']
     Home: typeof import('./../src/views/home.vue')['default']

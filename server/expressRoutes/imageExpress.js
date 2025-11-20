@@ -49,6 +49,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     const lastFile = await File.findOne().sort({ serialNumber: -1 })
     const serialNumber = lastFile ? lastFile.serialNumber + 1 : 1
 
+    const imageHeight = Math.floor(Math.random() * 500) + 200 // 模拟图片高度，实际应用中应根据图片实际尺寸设置
+
     // 保存文件信息到数据库
     const fileDoc = new File({
       serialNumber: serialNumber,
@@ -56,6 +58,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       filePath: req.file.path,
       fileSize: req.file.size,
       mimeType: req.file.mimetype,
+      imageHeight: imageHeight,
     })
     await fileDoc.save()
 
@@ -68,6 +71,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         size: req.file.size,
         path: req.file.path,
         uploadTime: fileDoc.uploadTime,
+        imageHeight: fileDoc.imageHeight,
       },
     })
   } catch (error) {
@@ -90,6 +94,7 @@ router.post('/upload-batch', upload.array('files', 500), async (req, res) => {
     // 批量保存到数据库
     const filePromises = req.files.map(async (file) => {
       currentSerial += 1
+      const imageHeight = Math.floor(Math.random() * 500) + 200 // 模拟图片高度，实际应用中应根据图片实际尺寸设置
       const fileName = Buffer.from(file.originalname, 'latin1').toString('utf8')
       const fileDoc = new File({
         serialNumber: currentSerial,
@@ -97,6 +102,7 @@ router.post('/upload-batch', upload.array('files', 500), async (req, res) => {
         filePath: file.path,
         fileSize: file.size,
         mimeType: file.mimetype,
+        imageHeight: imageHeight,
       })
       await fileDoc.save()
       return {
@@ -105,6 +111,7 @@ router.post('/upload-batch', upload.array('files', 500), async (req, res) => {
         size: file.size,
         path: file.path,
         uploadTime: fileDoc.uploadTime,
+        imageHeight: fileDoc.imageHeight,
       }
     })
 
@@ -129,11 +136,8 @@ router.get('/list', async (req, res) => {
     const skip = (page - 1) * pageSize
 
     const total = await File.countDocuments()
-    const files = await File.find()
-      .sort({ uploadTime: -1 })
-      .skip(skip)
-      .limit(pageSize)
-      .select('serialNumber fileName fileSize filePath uploadTime mimeType')
+    const files = await File.find().sort({ uploadTime: -1 }).skip(skip).limit(pageSize)
+    // .select('serialNumber fileName fileSize filePath uploadTime mimeType imageHeight')
 
     res.json({
       success: true,
@@ -145,6 +149,7 @@ router.get('/list', async (req, res) => {
           path: file.filePath,
           uploadTime: file.uploadTime,
           mimeType: file.mimeType,
+          imageHeight: file.imageHeight,
         })),
         pagination: {
           page,

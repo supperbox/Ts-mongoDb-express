@@ -25,6 +25,9 @@ const fileSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  imageHeight: {
+    type: Number,
+  },
 })
 
 // 自动生成序列号

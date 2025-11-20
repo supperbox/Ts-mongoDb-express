@@ -2,7 +2,7 @@ import model from '../db/User.js'
 import express from 'express'
 import userRoute from './expressRoutes/user.js'
 import loginRoute from './expressRoutes/loginExpress.js'
-import fileRoute from './expressRoutes/file.js'
+import fileRoute from './expressRoutes/imageExpress.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 

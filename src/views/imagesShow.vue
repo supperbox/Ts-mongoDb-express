@@ -222,7 +222,7 @@ function handleScroll() {
 }
 
 // 包一层节流版本，避免频繁重建虚拟列表导致闪烁
-const handleScrollThrottled = throttle(handleScroll, 1000)
+const handleScrollThrottled = throttle(handleScroll, 300)
 
 onMounted(async () => {
   await loadMore() // 首次加载
@@ -272,7 +272,7 @@ onUnmounted(() => {
               <img
                 :src="`http://localhost:3001/uploads/${item.name}`"
                 :alt="item.name"
-                class="w-full transition-opacity duration-500"
+                class="w-full transition-opacity duration-500 object-cover"
                 :class="item.status === 'loaded' ? 'opacity-100' : 'opacity-0'"
                 loading="lazy"
                 :style="{ height: item.imageHeight - 30 + 'px' }"
